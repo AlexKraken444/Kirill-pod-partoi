@@ -23,7 +23,6 @@ export default function MoviePage() {
         </a>
         <nav aria-label="Основная навигация">
           <a href="#about">О фильме</a>
-          <button className="searchButton" aria-label="Поиск недоступен" title="Поиск скоро появится">⌕</button>
           <span className="avatar">К</span>
         </nav>
       </header>
