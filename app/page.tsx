@@ -19,7 +19,7 @@ export default function MoviePage() {
       <header className="topbar">
         <a className="brand" href="#top" aria-label="На главную">
           <span className="brandMark">К</span>
-          <span>КИНОКЛУБ</span>
+          <span className="brandName">КИРИЛЛ ПОД ПАРТОЙ: ФИЛЬМ</span>
         </a>
         <nav aria-label="Основная навигация">
           <a href="#about">О фильме</a>
