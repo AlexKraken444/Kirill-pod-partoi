@@ -63,7 +63,7 @@ export default function MoviePage() {
         <div className="sectionLabel">О ФИЛЬМЕ</div>
         <div className="detailsGrid">
           <div>
-            <h2>Последняя глава.<br /><span>Последнее прощание.</span></h2>
+            <h2>Последнее прощание.</h2>
             <p className="description">Вот и настала финальная точка<br />мультсериалов про Кирилла…<br />Давайте вместе попрощаемся с<br />этой историей!</p>
           </div>
           <div className="facts">
@@ -82,7 +82,7 @@ export default function MoviePage() {
         </button>
       </section>
 
-      <footer><span className="brandMark small">К</span><p>КИРИЛЛ ПОД ПАРТОЙ: ФИЛЬМ</p><small>© 2026</small></footer>
+      <footer><span className="brandMark small">К</span><p>КИРИЛЛ ПОД ПАРТОЙ: ФИЛЬМ</p></footer>
 
       <dialog ref={dialogRef} className="trailerDialog" onClose={() => setTrailerOpen(false)} onClick={(e) => { if (e.target === e.currentTarget) setTrailerOpen(false); }}>
         <div className="dialogBody">
