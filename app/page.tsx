@@ -4,10 +4,22 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ModelViewer from "./ModelViewer";
 
+const productionImages = [
+  { src: "/production-blender.png", alt: "3D-модель головы Кирилла в Blender 5.1.0", caption: "3D-модель головы Кирилла" },
+  { src: "/production-character.png", alt: "Полная 3D-модель Кирилла с системой костей в Blender 5.1.0", caption: "Подготовка персонажа к анимации" },
+  { src: "/production-face-closeup.png", alt: "Крупный план глаз 3D-модели Кирилла в Blender 5.1.0", caption: "Работа над деталями лица" }
+];
+
 export default function MoviePage() {
   const [isTrailerOpen, setTrailerOpen] = useState(false);
+  const [productionImage, setProductionImage] = useState(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const galleryTouchStart = useRef<number | null>(null);
+
+  const changeProductionImage = (direction: number) => {
+    setProductionImage((current) => (current + direction + productionImages.length) % productionImages.length);
+  };
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -89,10 +101,33 @@ export default function MoviePage() {
             <p>Сейчас фильм создаётся в Blender 5.1.0. Монтаж будет выполнен в CapCut, а 2D-часть — нарисована в IbisPaint X.</p>
           </div>
           <figure className="productionVisual">
-            <div className="productionImage">
-              <Image src="/production-blender.png" fill sizes="(max-width: 900px) 100vw, 720px" alt="3D-модель головы Кирилла в Blender 5.1.0" />
+            <div
+              className="productionImage"
+              tabIndex={0}
+              aria-label={`Галерея производства, изображение ${productionImage + 1} из ${productionImages.length}`}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowLeft") changeProductionImage(-1);
+                if (event.key === "ArrowRight") changeProductionImage(1);
+              }}
+              onTouchStart={(event) => { galleryTouchStart.current = event.touches[0].clientX; }}
+              onTouchEnd={(event) => {
+                if (galleryTouchStart.current === null) return;
+                const distance = event.changedTouches[0].clientX - galleryTouchStart.current;
+                if (Math.abs(distance) > 45) changeProductionImage(distance > 0 ? -1 : 1);
+                galleryTouchStart.current = null;
+              }}
+            >
+              <Image key={productionImages[productionImage].src} src={productionImages[productionImage].src} fill sizes="(max-width: 900px) 100vw, 720px" alt={productionImages[productionImage].alt} />
+              <button type="button" className="galleryArrow previous" onClick={() => changeProductionImage(-1)} aria-label="Предыдущее изображение">‹</button>
+              <button type="button" className="galleryArrow next" onClick={() => changeProductionImage(1)} aria-label="Следующее изображение">›</button>
+              <span className="galleryCounter">{String(productionImage + 1).padStart(2, "0")} / {String(productionImages.length).padStart(2, "0")}</span>
             </div>
-            <figcaption><span>РАБОЧИЙ ПРОЦЕСС</span> 3D-модель головы Кирилла в Blender</figcaption>
+            <figcaption><span>РАБОЧИЙ ПРОЦЕСС</span> {productionImages[productionImage].caption}</figcaption>
+            <div className="galleryDots" aria-label="Выбор изображения">
+              {productionImages.map((image, index) => (
+                <button key={image.src} className={index === productionImage ? "active" : ""} onClick={() => setProductionImage(index)} aria-label={`Показать изображение ${index + 1}`} aria-current={index === productionImage ? "true" : undefined} />
+              ))}
+            </div>
           </figure>
           <ol className="productionSteps">
             <li><span>01</span><div><strong>3D-производство</strong><small>Blender 5.1.0</small></div></li>
@@ -110,9 +145,6 @@ export default function MoviePage() {
             <p>Зажмите и потяните модель, чтобы повернуть её. Используйте колёсико мыши или жест двумя пальцами для приближения.</p>
           </div>
           <ModelViewer />
-          <div className="viewerHints" aria-hidden="true">
-            <span>↔ Вращение</span><span>＋ Масштаб</span><span>◎ Сброс вида</span>
-          </div>
         </section>
 
         <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер">
