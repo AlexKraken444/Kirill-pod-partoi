@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import ModelViewer from "./ModelViewer";
 
 export default function MoviePage() {
   const [isTrailerOpen, setTrailerOpen] = useState(false);
@@ -98,6 +99,20 @@ export default function MoviePage() {
             <li><span>02</span><div><strong>Монтаж</strong><small>CapCut</small></div></li>
             <li><span>03</span><div><strong>2D-графика</strong><small>IbisPaint X</small></div></li>
           </ol>
+        </section>
+
+        <section className="modelShowcase" aria-labelledby="model-title">
+          <div className="modelIntro">
+            <div>
+              <span>ИНТЕРАКТИВНАЯ МОДЕЛЬ</span>
+              <h2 id="model-title">Рассмотрите<br />Кирилла в 3D</h2>
+            </div>
+            <p>Зажмите и потяните модель, чтобы повернуть её. Используйте колёсико мыши или жест двумя пальцами для приближения.</p>
+          </div>
+          <ModelViewer />
+          <div className="viewerHints" aria-hidden="true">
+            <span>↔ Вращение</span><span>＋ Масштаб</span><span>◎ Сброс вида</span>
+          </div>
         </section>
 
         <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер">
