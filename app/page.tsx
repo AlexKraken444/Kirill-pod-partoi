@@ -81,6 +81,25 @@ export default function MoviePage() {
           </dl>
         </div>
 
+        <section className="production" aria-labelledby="production-title">
+          <div className="productionHeading">
+            <span>ПРОЦЕСС СОЗДАНИЯ</span>
+            <h2 id="production-title">О производстве<br />фильма</h2>
+            <p>Сейчас фильм создаётся в Blender 5.1.0. Монтаж будет выполнен в CapCut, а 2D-часть — нарисована в IbisPaint X.</p>
+          </div>
+          <figure className="productionVisual">
+            <div className="productionImage">
+              <Image src="/production-blender.png" fill sizes="(max-width: 900px) 100vw, 720px" alt="3D-модель головы Кирилла в Blender 5.1.0" />
+            </div>
+            <figcaption><span>РАБОЧИЙ ПРОЦЕСС</span> 3D-модель головы Кирилла в Blender</figcaption>
+          </figure>
+          <ol className="productionSteps">
+            <li><span>01</span><div><strong>3D-производство</strong><small>Blender 5.1.0</small></div></li>
+            <li><span>02</span><div><strong>Монтаж</strong><small>CapCut</small></div></li>
+            <li><span>03</span><div><strong>2D-графика</strong><small>IbisPaint X</small></div></li>
+          </ol>
+        </section>
+
         <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер">
           <Image src="/teaser-cover.jpg" fill sizes="(max-width: 900px) 100vw, 1100px" alt="Первый кадр тизера" />
           <span className="teaserShade" />
