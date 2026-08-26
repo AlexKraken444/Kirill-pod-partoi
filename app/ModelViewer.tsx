@@ -10,6 +10,11 @@ export default function ModelViewer() {
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const initialCameraPosition = useRef(new THREE.Vector3());
+  const resetAnimation = useRef<{
+    startedAt: number;
+    fromPosition: THREE.Vector3;
+    fromTarget: THREE.Vector3;
+  } | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
   useEffect(() => {
@@ -36,6 +41,8 @@ export default function ModelViewer() {
     controls.enablePan = false;
     controls.minPolarAngle = Math.PI * 0.12;
     controls.maxPolarAngle = Math.PI * 0.88;
+    const cancelReset = () => { resetAnimation.current = null; };
+    controls.addEventListener("start", cancelReset);
 
     scene.add(new THREE.HemisphereLight(0xffffff, 0x24201e, 2.25));
     const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
@@ -96,7 +103,16 @@ export default function ModelViewer() {
     resize();
 
     let animationFrame = 0;
+    const origin = new THREE.Vector3();
     const animate = () => {
+      const reset = resetAnimation.current;
+      if (reset) {
+        const progress = Math.min((performance.now() - reset.startedAt) / 750, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        camera.position.lerpVectors(reset.fromPosition, initialCameraPosition.current, eased);
+        controls.target.lerpVectors(reset.fromTarget, origin, eased);
+        if (progress === 1) resetAnimation.current = null;
+      }
       controls.update();
       renderer.render(scene, camera);
       animationFrame = requestAnimationFrame(animate);
@@ -106,6 +122,7 @@ export default function ModelViewer() {
     return () => {
       cancelAnimationFrame(animationFrame);
       resizeObserver.disconnect();
+      controls.removeEventListener("start", cancelReset);
       controls.dispose();
       model?.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -123,9 +140,11 @@ export default function ModelViewer() {
     const camera = cameraRef.current;
     const controls = controlsRef.current;
     if (!camera || !controls) return;
-    camera.position.copy(initialCameraPosition.current);
-    controls.target.set(0, 0, 0);
-    controls.update();
+    resetAnimation.current = {
+      startedAt: performance.now(),
+      fromPosition: camera.position.clone(),
+      fromTarget: controls.target.clone()
+    };
   };
 
   return (
