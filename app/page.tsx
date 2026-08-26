@@ -56,7 +56,9 @@ export default function MoviePage() {
 
           <aside className="rating" aria-label="Рейтинг пока недоступен">
             <span>РЕЙТИНГ</span>
-            <strong>—</strong>
+            <div className="ratingStars" aria-hidden="true">
+              {Array.from({ length: 5 }).map((_, index) => <i className="ratingStar" key={index} />)}
+            </div>
             <p>Оценки появятся<br />после премьеры</p>
           </aside>
         </div>

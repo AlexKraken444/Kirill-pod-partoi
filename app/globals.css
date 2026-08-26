@@ -36,7 +36,8 @@ h1 em { color:var(--orange); font-style:normal; }
 .availability { color:#777470; font-size:11px; margin:11px 0; }
 .rating { border-left:1px solid #373634; padding-left:28px; align-self:start; margin-top:130px; }
 .rating>span { font-size:9px; letter-spacing:.22em; color:#777; }
-.rating strong { display:block; font-family:Impact,'Arial Black',sans-serif; font-size:54px; color:#5f5d59; margin:10px 0 3px; }
+.ratingStars { display:flex; align-items:center; justify-content:space-between; gap:5px; width:120px; margin:18px 0 13px; }
+.ratingStar { display:block; width:20px; aspect-ratio:1; flex:0 0 20px; background:#5f5d59; clip-path:polygon(50% 0%,61.23% 34.55%,97.55% 34.55%,68.16% 55.90%,79.39% 90.45%,50% 69.10%,20.61% 90.45%,31.84% 55.90%,2.45% 34.55%,38.77% 34.55%); }
 .rating p { color:#777; font-size:10px; line-height:1.5; }
 .details { max-width:1160px; margin:0 auto; padding:90px 30px 100px; }
 .sectionLabel { font-size:10px; font-weight:800; letter-spacing:.3em; color:var(--orange); border-bottom:1px solid #292827; padding-bottom:18px; }
