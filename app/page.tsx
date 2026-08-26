@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import ModelViewer from "./ModelViewer";
 
 const productionImages = [
-  { src: "/production-blender.png", alt: "3D-модель головы Кирилла в Blender 5.1.0", caption: "3D-модель головы Кирилла" },
-  { src: "/production-character.png", alt: "Полная 3D-модель Кирилла с системой костей в Blender 5.1.0", caption: "Подготовка персонажа к анимации" },
-  { src: "/production-face-closeup.png", alt: "Крупный план глаз 3D-модели Кирилла в Blender 5.1.0", caption: "Работа над деталями лица" }
+  { src: "/production-blender.png", alt: "3D-модель головы Кирилла в Blender 5.1.0" },
+  { src: "/production-character.png", alt: "Полная 3D-модель Кирилла с системой костей в Blender 5.1.0" },
+  { src: "/production-face-closeup.png", alt: "Крупный план глаз 3D-модели Кирилла в Blender 5.1.0" }
 ];
 
 export default function MoviePage() {
@@ -118,11 +118,10 @@ export default function MoviePage() {
               }}
             >
               <Image key={productionImages[productionImage].src} src={productionImages[productionImage].src} fill sizes="(max-width: 900px) 100vw, 720px" alt={productionImages[productionImage].alt} />
-              <button type="button" className="galleryArrow previous" onClick={() => changeProductionImage(-1)} aria-label="Предыдущее изображение">‹</button>
-              <button type="button" className="galleryArrow next" onClick={() => changeProductionImage(1)} aria-label="Следующее изображение">›</button>
+              <button type="button" className="galleryArrow previous" onClick={() => changeProductionImage(-1)} aria-label="Предыдущее изображение" />
+              <button type="button" className="galleryArrow next" onClick={() => changeProductionImage(1)} aria-label="Следующее изображение" />
               <span className="galleryCounter">{String(productionImage + 1).padStart(2, "0")} / {String(productionImages.length).padStart(2, "0")}</span>
             </div>
-            <figcaption><span>РАБОЧИЙ ПРОЦЕСС</span> {productionImages[productionImage].caption}</figcaption>
             <div className="galleryDots" aria-label="Выбор изображения">
               {productionImages.map((image, index) => (
                 <button key={image.src} className={index === productionImage ? "active" : ""} onClick={() => setProductionImage(index)} aria-label={`Показать изображение ${index + 1}`} aria-current={index === productionImage ? "true" : undefined} />
