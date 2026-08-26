@@ -20,6 +20,7 @@ export default function ModelViewer() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    container.closest(".modelShowcase")?.querySelectorAll(".viewerHints").forEach((element) => element.remove());
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);

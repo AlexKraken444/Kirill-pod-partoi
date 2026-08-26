@@ -68,6 +68,7 @@ h2 span { color:#4d4b48; }
 .productionSteps strong { color:#e7e3dc; font-size:13px; margin-bottom:5px; }
 .productionSteps small { color:#74716d; font-size:11px; }
 .modelShowcase { padding:0 0 90px; }
+.viewerHints { display:none !important; }
 .modelIntro { display:flex; align-items:end; justify-content:space-between; gap:60px; padding:0 0 32px; }
 .modelIntro>div>span { display:block; margin-bottom:16px; color:var(--orange); font-size:9px; font-weight:800; letter-spacing:.25em; }
 .modelIntro h2 { margin:0; font-size:clamp(35px,3.7vw,51px); }
@@ -80,7 +81,6 @@ h2 span { color:#4d4b48; }
 .modelStatus.error { color:#d69a85; }
 .resetView { position:absolute; z-index:3; right:18px; bottom:18px; padding:10px 14px; border:1px solid rgba(255,255,255,.25); background:rgba(9,9,9,.72); color:#d7d3cc; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; backdrop-filter:blur(8px); cursor:pointer; }
 .resetView:hover { border-color:var(--orange); color:#fff; }
-.viewerHints { display:flex; justify-content:flex-end; gap:24px; padding-top:13px; color:#6f6c68; font-size:9px; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
 @keyframes modelSpin { to { transform:rotate(360deg); } }
 .teaserCard { width:100%; aspect-ratio:2.25/1; border:0; padding:0; position:relative; overflow:hidden; background:#151515; color:#fff; cursor:pointer; text-align:left; }
 .teaserCard img { object-fit:cover; object-position:center; transition:transform .5s ease; }
@@ -135,7 +135,6 @@ footer p { font-size:10px; letter-spacing:.18em; font-weight:800; }
   .modelIntro { display:block; }
   .modelIntro p { margin-top:22px; }
   .modelViewer { height:430px; }
-  .viewerHints { justify-content:flex-start; flex-wrap:wrap; gap:10px 18px; }
   .teaserCard { aspect-ratio:1.35/1; }
   .playCircle { left:8%; width:55px; height:55px; }
   .teaserCopy { left:28%; }
