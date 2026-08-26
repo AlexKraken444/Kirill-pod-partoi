@@ -45,7 +45,7 @@ export default function MoviePage() {
           <div className="movieInfo">
             <div className="eyebrow"><span>ФИЛЬМ</span><i />СКОРО</div>
             <h1>Кирилл под партой:<br /><em>фильм</em></h1>
-            <p className="meta">2027&nbsp;&nbsp;•&nbsp;&nbsp;Мультфильм&nbsp;&nbsp;•&nbsp;&nbsp;Россия</p>
+            <p className="meta">2027&nbsp;&nbsp;•&nbsp;&nbsp;фантастика, приключения&nbsp;&nbsp;•&nbsp;&nbsp;Россия</p>
             <p className="lead">Финальная история Кирилла.</p>
             <div className="actions">
               <button className="primaryButton disabled" disabled><span>▶</span> Смотреть фильм</button>
@@ -67,16 +67,18 @@ export default function MoviePage() {
       <section className="details" id="about">
         <div className="sectionLabel">О ФИЛЬМЕ</div>
         <div className="detailsGrid">
-          <div>
+          <div className="aboutLead">
             <h2>Последнее прощание.</h2>
             <p className="description">Вот и настала финальная точка<br />мультсериалов про Кирилла…<br />Давайте вместе попрощаемся с<br />этой историей!</p>
           </div>
-          <div className="facts">
-            <div><span>ГОД</span><strong>2027</strong></div>
-            <div><span>СТРАНА</span><strong>Россия</strong></div>
-            <div><span>ЖАНР</span><strong>Мультфильм</strong></div>
-            <div><span>СТАТУС</span><strong className="accent">Скоро</strong></div>
-          </div>
+          <dl className="movieFacts">
+            <div><dt>Год производства</dt><dd>2027</dd></div>
+            <div><dt>Страна</dt><dd>Россия</dd></div>
+            <div><dt>Жанр</dt><dd>фантастика, приключения</dd></div>
+            <div><dt>Слоган</dt><dd>—</dd></div>
+            <div><dt>Режиссёр</dt><dd>Александр Пугин</dd></div>
+            <div><dt>Сценарий</dt><dd>Александр Пугин</dd></div>
+          </dl>
         </div>
 
         <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер">

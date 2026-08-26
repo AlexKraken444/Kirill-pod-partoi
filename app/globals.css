@@ -41,14 +41,16 @@ h1 em { color:var(--orange); font-style:normal; }
 .rating p { color:#777; font-size:10px; line-height:1.5; }
 .details { max-width:1160px; margin:0 auto; padding:90px 30px 100px; }
 .sectionLabel { font-size:10px; font-weight:800; letter-spacing:.3em; color:var(--orange); border-bottom:1px solid #292827; padding-bottom:18px; }
-.detailsGrid { display:grid; grid-template-columns:1.35fr .65fr; gap:90px; padding:55px 0 75px; }
+.detailsGrid { display:grid; grid-template-columns:minmax(0,1fr) minmax(360px,.9fr); gap:clamp(60px,9vw,130px); padding:55px 0 75px; align-items:start; }
 h2 { margin:0 0 30px; font-family:Impact,'Arial Black',sans-serif; font-size:clamp(34px,4.2vw,58px); line-height:1.06; text-transform:uppercase; font-weight:400; }
 h2 span { color:#4d4b48; }
 .description { color:#b6b3ad; font-size:18px; line-height:1.85; }
-.facts { display:grid; grid-template-columns:1fr 1fr; gap:34px 40px; align-content:start; padding-top:10px; }
-.facts span,.teaserCopy small { display:block; color:#77736e; font-size:9px; letter-spacing:.2em; margin-bottom:10px; }
-.facts strong { font-size:14px; }
-.facts .accent { color:var(--orange); }
+.movieFacts { margin:0; padding:4px 0 0; }
+.movieFacts>div { display:grid; grid-template-columns:minmax(125px,.85fr) minmax(0,1.15fr); gap:28px; padding:15px 0; border-bottom:1px solid #242321; }
+.movieFacts>div:first-child { padding-top:0; }
+.movieFacts dt { color:#74716d; font-size:13px; line-height:1.55; }
+.movieFacts dd { margin:0; color:#e0ddd7; font-size:14px; font-weight:600; line-height:1.55; }
+.teaserCopy small { display:block; color:#77736e; font-size:9px; letter-spacing:.2em; margin-bottom:10px; }
 .teaserCard { width:100%; aspect-ratio:2.25/1; border:0; padding:0; position:relative; overflow:hidden; background:#151515; color:#fff; cursor:pointer; text-align:left; }
 .teaserCard img { object-fit:cover; object-position:center; transition:transform .5s ease; }
 .teaserCard:hover img { transform:scale(1.025); }
