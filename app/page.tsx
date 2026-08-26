@@ -152,6 +152,23 @@ export default function MoviePage() {
           <span className="playCircle">▶</span>
           <span className="teaserCopy"><small>ОФИЦИАЛЬНЫЙ ТИЗЕР</small><b>Смотреть тизер</b></span>
         </button>
+
+        <section className="wallpaperSection" aria-labelledby="wallpaper-title">
+          <div className="wallpaperPreview">
+            <div className="phoneFrame">
+              <Image src="/kirill-wallpaper.png" width={1177} height={2560} sizes="(max-width: 640px) 52vw, 250px" alt="Тематические обои «Кирилл под партой» для телефона" />
+            </div>
+          </div>
+          <div className="wallpaperContent">
+            <span>ДЛЯ ТЕЛЕФОНА</span>
+            <h2 id="wallpaper-title">Обои с<br />Кириллом</h2>
+            <p>Тематические обои для экрана телефона в полном разрешении 1177 × 2560.</p>
+            <a className="downloadWallpaper" href="/kirill-wallpaper.png" download="kirill-pod-partoi-wallpaper.png">
+              Скачать PNG <i aria-hidden="true">↓</i>
+            </a>
+            <small>PNG · 1177 × 2560</small>
+          </div>
+        </section>
       </section>
 
       <footer><span className="brandMark small">К</span><p>КИРИЛЛ ПОД ПАРТОЙ: ФИЛЬМ</p></footer>

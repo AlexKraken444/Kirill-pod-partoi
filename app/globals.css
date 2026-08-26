@@ -100,6 +100,19 @@ h2 span { color:#4d4b48; }
 .playCircle { position:absolute; left:9%; top:50%; translate:0 -50%; width:72px; height:72px; border:1px solid rgba(255,255,255,.7); border-radius:50%; display:grid; place-items:center; padding-left:5px; font-size:20px; }
 .teaserCopy { position:absolute; left:19%; top:50%; translate:0 -50%; }
 .teaserCopy b { font-family:Impact,'Arial Black',sans-serif; font-size:clamp(22px,3vw,40px); text-transform:uppercase; font-weight:400; }
+.wallpaperSection { display:grid; grid-template-columns:minmax(260px,.75fr) minmax(0,1.25fr); align-items:center; gap:clamp(55px,9vw,125px); margin-top:90px; padding:80px clamp(35px,6vw,75px); overflow:hidden; position:relative; border:1px solid #292827; background:radial-gradient(circle at 24% 52%,rgba(255,255,255,.08),transparent 31%),#0d0d0d; }
+.wallpaperSection::after { content:""; position:absolute; width:250px; height:250px; right:-100px; top:-110px; border:1px solid rgba(255,90,31,.22); border-radius:50%; }
+.wallpaperPreview { display:grid; place-items:center; position:relative; z-index:1; }
+.phoneFrame { width:min(235px,100%); padding:7px; border:1px solid #4a4845; border-radius:26px; background:#050505; box-shadow:0 32px 65px rgba(0,0,0,.55); transform:rotate(-3deg); }
+.phoneFrame img { display:block; width:100%; height:auto; border-radius:19px; }
+.wallpaperContent { position:relative; z-index:1; }
+.wallpaperContent>span { display:block; margin-bottom:18px; color:var(--orange); font-size:9px; font-weight:800; letter-spacing:.25em; }
+.wallpaperContent h2 { margin-bottom:23px; font-size:clamp(38px,4.7vw,61px); }
+.wallpaperContent p { max-width:430px; margin:0 0 31px; color:#9d9a94; font-size:14px; line-height:1.75; }
+.downloadWallpaper { display:inline-flex; align-items:center; justify-content:space-between; gap:40px; min-width:220px; padding:16px 18px; background:var(--orange); color:#fff; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; transition:background .2s,transform .2s; }
+.downloadWallpaper:hover { background:#ff713f; transform:translateY(-2px); }
+.downloadWallpaper i { font-style:normal; font-size:19px; line-height:1; }
+.wallpaperContent>small { display:block; margin-top:12px; color:#5f5c58; font-size:9px; letter-spacing:.14em; }
 footer { max-width:1160px; margin:0 auto; border-top:1px solid #292827; min-height:130px; padding:0 30px; display:flex; align-items:center; gap:14px; color:#777; }
 footer p { font-size:10px; letter-spacing:.18em; font-weight:800; }
 .brandMark.small { width:27px; height:27px; font-size:15px; }
@@ -152,5 +165,10 @@ footer p { font-size:10px; letter-spacing:.18em; font-weight:800; }
   .teaserCard { aspect-ratio:1.35/1; }
   .playCircle { left:8%; width:55px; height:55px; }
   .teaserCopy { left:28%; }
+  .wallpaperSection { grid-template-columns:1fr; gap:45px; margin-top:68px; padding:55px 25px; }
+  .phoneFrame { width:min(210px,58vw); }
+  .wallpaperContent { text-align:center; }
+  .wallpaperContent p { margin-left:auto; margin-right:auto; }
+  .downloadWallpaper { width:100%; }
   footer { margin:0 18px; padding:0; }
 }
