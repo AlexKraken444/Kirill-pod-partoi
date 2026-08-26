@@ -10,9 +10,18 @@ const productionImages = [
   { src: "/production-face-closeup.png", alt: "Крупный план глаз 3D-модели Кирилла в Blender 5.1.0" }
 ];
 
+const russianAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+const wallpaperWord = "КИРИЛЛОМ";
+
+const caesarEncode = (word: string, shift: number) => word.split("").map((letter) => {
+  const index = russianAlphabet.indexOf(letter);
+  return index < 0 ? letter : russianAlphabet[(index + shift) % russianAlphabet.length];
+}).join("");
+
 export default function MoviePage() {
   const [isTrailerOpen, setTrailerOpen] = useState(false);
   const [productionImage, setProductionImage] = useState(0);
+  const [cipherShift, setCipherShift] = useState(1);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const galleryTouchStart = useRef<number | null>(null);
@@ -30,6 +39,31 @@ export default function MoviePage() {
       if (dialog.open) dialog.close();
     }
   }, [isTrailerOpen]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCipherShift((current) => current >= russianAlphabet.length - 1 ? 1 : current + 1);
+    }, 700);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      elements.forEach((element) => element.classList.add("is-visible"));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -7% 0px" });
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <main>
@@ -49,7 +83,7 @@ export default function MoviePage() {
           <Image src="/Kirill-poster.jpg" alt="" fill priority sizes="100vw" />
         </div>
         <div className="heroVignette" />
-        <div className="heroContent">
+        <div className="heroContent" data-reveal>
           <div className="posterWrap">
             <Image className="poster" src="/Kirill-poster.jpg" width={405} height={607} priority alt="Постер фильма «Кирилл под партой: фильм»" />
             <span className="posterBadge">СКОРО</span>
@@ -79,7 +113,7 @@ export default function MoviePage() {
 
       <section className="details" id="about">
         <div className="sectionLabel">О ФИЛЬМЕ</div>
-        <div className="detailsGrid">
+        <div className="detailsGrid" data-reveal>
           <div className="aboutLead">
             <h2>Последнее прощание.</h2>
             <p className="description">Вот и настала финальная точка<br />мультсериалов про Кирилла…<br />Давайте вместе попрощаемся с<br />этой историей!</p>
@@ -94,7 +128,7 @@ export default function MoviePage() {
           </dl>
         </div>
 
-        <section className="production" aria-labelledby="production-title">
+        <section className="production" aria-labelledby="production-title" data-reveal>
           <div className="productionHeading">
             <span>ПРОЦЕСС СОЗДАНИЯ</span>
             <h2 id="production-title">О производстве<br />фильма</h2>
@@ -135,7 +169,7 @@ export default function MoviePage() {
           </ol>
         </section>
 
-        <section className="modelShowcase" aria-labelledby="model-title">
+        <section className="modelShowcase" aria-labelledby="model-title" data-reveal>
           <div className="modelIntro">
             <div>
               <span>ИНТЕРАКТИВНАЯ МОДЕЛЬ</span>
@@ -146,24 +180,24 @@ export default function MoviePage() {
           <ModelViewer />
         </section>
 
-        <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер">
+        <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер" data-reveal>
           <Image src="/teaser-cover.jpg" fill sizes="(max-width: 900px) 100vw, 1100px" alt="Первый кадр тизера" />
           <span className="teaserShade" />
           <span className="playCircle">▶</span>
           <span className="teaserCopy"><small>ОФИЦИАЛЬНЫЙ ТИЗЕР</small><b>Смотреть тизер</b></span>
         </button>
 
-        <section className="wallpaperSection" aria-labelledby="wallpaper-title">
+        <section className="wallpaperSection" aria-labelledby="wallpaper-title" data-reveal>
           <div className="wallpaperPreview">
             <div className="phoneFrame">
-              <Image src="/kirill-wallpaper.png" width={1177} height={2560} sizes="(max-width: 640px) 52vw, 250px" alt="Тематические обои «Кирилл под партой» для телефона" />
+              <Image src="/wallpaper.png" width={1177} height={2560} sizes="(max-width: 640px) 52vw, 250px" alt="Тематические обои «Кирилл под партой» для телефона" />
             </div>
           </div>
           <div className="wallpaperContent">
             <span>ДЛЯ ТЕЛЕФОНА</span>
-            <h2 id="wallpaper-title">Обои с<br />Кириллом</h2>
+            <h2 id="wallpaper-title" aria-label="Обои с Кириллом">Обои с<br /><span className="cipherWord" key={cipherShift}>{caesarEncode(wallpaperWord, cipherShift)}</span></h2>
             <p>Тематические обои для экрана телефона в полном разрешении 1177 × 2560.</p>
-            <a className="downloadWallpaper" href="/kirill-wallpaper.png" download="kirill-pod-partoi-wallpaper.png">
+            <a className="downloadWallpaper" href="/wallpaper.png" download="wallpaper.png">
               Скачать PNG <i aria-hidden="true">↓</i>
             </a>
             <small>PNG · 1177 × 2560</small>

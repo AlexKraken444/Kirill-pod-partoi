@@ -2,6 +2,8 @@
 * { box-sizing:border-box; }
 html { scroll-behavior:smooth; background:var(--ink); }
 body { margin:0; color:var(--cream); background:#090909; font-family:Inter,Arial,sans-serif; }
+[data-reveal] { opacity:0; transform:translateY(42px); transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1); }
+[data-reveal].is-visible { opacity:1; transform:translateY(0); }
 button,a { font:inherit; }
 a { color:inherit; text-decoration:none; }
 .topbar { height:76px; padding:0 clamp(24px,5vw,78px); display:flex; align-items:center; justify-content:space-between; position:absolute; z-index:20; width:100%; border-bottom:1px solid rgba(255,255,255,.12); }
@@ -108,11 +110,33 @@ h2 span { color:#4d4b48; }
 .wallpaperContent { position:relative; z-index:1; }
 .wallpaperContent>span { display:block; margin-bottom:18px; color:var(--orange); font-size:9px; font-weight:800; letter-spacing:.25em; }
 .wallpaperContent h2 { margin-bottom:23px; font-size:clamp(38px,4.7vw,61px); }
+.cipherWord { display:inline-block; min-width:8ch; color:var(--orange); animation:cipherChange .7s cubic-bezier(.22,1,.36,1) both; }
 .wallpaperContent p { max-width:430px; margin:0 0 31px; color:#9d9a94; font-size:14px; line-height:1.75; }
 .downloadWallpaper { display:inline-flex; align-items:center; justify-content:space-between; gap:40px; min-width:220px; padding:16px 18px; background:var(--orange); color:#fff; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; transition:background .2s,transform .2s; }
 .downloadWallpaper:hover { background:#ff713f; transform:translateY(-2px); }
 .downloadWallpaper i { font-style:normal; font-size:19px; line-height:1; }
 .wallpaperContent>small { display:block; margin-top:12px; color:#5f5c58; font-size:9px; letter-spacing:.14em; }
+@keyframes cipherChange { 0% { opacity:.15; transform:translateY(10px); filter:blur(4px); } 45%,100% { opacity:1; transform:translateY(0); filter:blur(0); } }
+@media (hover:hover) {
+  .posterWrap { transition:transform .45s cubic-bezier(.22,1,.36,1); }
+  .posterWrap:hover { transform:translateY(-9px) rotate(-.6deg); }
+  .movieFacts>div { transition:padding-left .25s ease,border-color .25s ease; }
+  .movieFacts>div:hover { padding-left:10px; border-color:#4a4743; }
+  .productionImage { transition:transform .45s cubic-bezier(.22,1,.36,1),border-color .25s ease; }
+  .productionImage:hover { transform:translateY(-4px); border-color:#57534e; }
+  .productionSteps li { transition:background .25s ease; }
+  .productionSteps li:hover { background:rgba(255,255,255,.035); }
+  .modelViewer { transition:border-color .25s ease,box-shadow .35s ease; }
+  .modelViewer:hover { border-color:#4b4844; box-shadow:0 24px 65px rgba(0,0,0,.28); }
+  .teaserCard { transition:transform .4s cubic-bezier(.22,1,.36,1); }
+  .teaserCard:hover { transform:translateY(-5px); }
+  .phoneFrame { transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s ease; }
+  .wallpaperSection:hover .phoneFrame { transform:rotate(0) translateY(-8px); box-shadow:0 42px 80px rgba(0,0,0,.7); }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+  [data-reveal] { opacity:1; transform:none; }
+}
 footer { max-width:1160px; margin:0 auto; border-top:1px solid #292827; min-height:130px; padding:0 30px; display:flex; align-items:center; gap:14px; color:#777; }
 footer p { font-size:10px; letter-spacing:.18em; font-weight:800; }
 .brandMark.small { width:27px; height:27px; font-size:15px; }
