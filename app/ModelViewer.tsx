@@ -26,8 +26,9 @@ export default function ModelViewer() {
     const camera = new THREE.PerspectiveCamera(38, 1, 0.01, 1000);
     cameraRef.current = camera;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const isMobileDevice = document.documentElement.dataset.device === "mobile" || window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobileDevice ? 1.5 : 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.15;

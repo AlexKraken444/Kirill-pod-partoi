@@ -48,6 +48,18 @@ export default function MoviePage() {
   }, []);
 
   useEffect(() => {
+    const mobileByInput = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
+    const mobileByBrowser = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    const device = mobileByInput || mobileByBrowser ? "mobile" : "desktop";
+    document.documentElement.dataset.device = device;
+    document.body.dataset.device = device;
+    return () => {
+      delete document.documentElement.dataset.device;
+      delete document.body.dataset.device;
+    };
+  }, []);
+
+  useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       elements.forEach((element) => element.classList.add("is-visible"));
@@ -116,7 +128,7 @@ export default function MoviePage() {
         <div className="detailsGrid" data-reveal>
           <div className="aboutLead">
             <h2>Последнее прощание.</h2>
-            <p className="description">Вот и настала финальная точка<br />мультсериалов про Кирилла…<br />Давайте вместе попрощаемся с<br />этой историей!</p>
+            <p className="description">Вот и настала финальная точка мультсериалов про Кирилла… Давайте вместе попрощаемся с этой историей!</p>
           </div>
           <dl className="movieFacts">
             <div><dt>Год производства</dt><dd>2027</dd></div>

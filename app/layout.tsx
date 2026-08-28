@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,6 +11,13 @@ export const metadata: Metadata = {
     images: [{ url: "/Kirill-poster.jpg", width: 1706, height: 2560 }],
     type: "video.movie"
   }
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#090909"
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
