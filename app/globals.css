@@ -118,13 +118,12 @@ h2 span { color:#4d4b48; }
 .wallpaperContent { position:relative; z-index:1; }
 .wallpaperContent>span { display:block; margin-bottom:18px; color:var(--orange); font-size:9px; font-weight:800; letter-spacing:.25em; }
 .wallpaperContent h2 { margin-bottom:23px; font-size:clamp(38px,4.7vw,61px); }
-.cipherWord { display:inline-block; min-width:8ch; color:var(--orange); animation:cipherChange .7s cubic-bezier(.22,1,.36,1) both; }
+.cipherWord { display:inline-block; min-width:8ch; color:var(--orange); }
 .wallpaperContent p { max-width:430px; margin:0 0 31px; color:#9d9a94; font-size:14px; line-height:1.75; }
 .downloadWallpaper { display:inline-flex; align-items:center; justify-content:space-between; gap:40px; min-width:220px; padding:16px 18px; background:var(--orange); color:#fff; font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.07em; transition:background .2s,transform .2s; }
 .downloadWallpaper:hover { background:#ff713f; transform:translateY(-2px); }
 .downloadWallpaper i { font-style:normal; font-size:19px; line-height:1; }
 .wallpaperContent>small { display:block; margin-top:12px; color:#5f5c58; font-size:9px; letter-spacing:.14em; }
-@keyframes cipherChange { 0% { opacity:.15; transform:translateY(10px); filter:blur(4px); } 45%,100% { opacity:1; transform:translateY(0); filter:blur(0); } }
 @media (hover:hover) {
   .posterWrap { transition:transform .45s cubic-bezier(.22,1,.36,1); }
   .posterWrap:hover { transform:translateY(-9px) rotate(-.6deg); }

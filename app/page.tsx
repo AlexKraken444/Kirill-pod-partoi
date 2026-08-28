@@ -43,7 +43,7 @@ export default function MoviePage() {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setCipherShift((current) => current >= russianAlphabet.length - 1 ? 1 : current + 1);
-    }, 700);
+    }, 90);
     return () => window.clearInterval(timer);
   }, []);
 
