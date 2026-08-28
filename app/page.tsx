@@ -140,6 +140,19 @@ export default function MoviePage() {
           </dl>
         </div>
 
+        <section className="voiceCast" aria-labelledby="voice-cast-title" data-reveal>
+          <div className="voiceCastHeading">
+            <span>АКТЁРСКИЙ СОСТАВ</span>
+            <h2 id="voice-cast-title">Роли<br />озвучивают</h2>
+            <p>Список может пополняться</p>
+          </div>
+          <ol className="voiceCastList">
+            <li><span>01</span><strong>Кирилл Горностаев</strong></li>
+            <li><span>02</span><strong>Платон Точилин</strong></li>
+            <li><span>03</span><strong>Александр Пугин</strong></li>
+          </ol>
+        </section>
+
         <section className="production" aria-labelledby="production-title" data-reveal>
           <div className="productionHeading">
             <span>ПРОЦЕСС СОЗДАНИЯ</span>
