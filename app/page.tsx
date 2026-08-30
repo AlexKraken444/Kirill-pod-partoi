@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ModelViewer from "./ModelViewer";
+import Discussion from "./Discussion";
 
 const productionImages = [
   { src: "/production-blender.png", alt: "3D-модель головы Кирилла в Blender 5.1.0" },
@@ -211,6 +212,8 @@ export default function MoviePage() {
           <span className="playCircle">▶</span>
           <span className="teaserCopy"><small>ОФИЦИАЛЬНЫЙ ТИЗЕР</small><b>Смотреть тизер</b></span>
         </button>
+
+        <Discussion />
 
         <section className="wallpaperSection" aria-labelledby="wallpaper-title" data-reveal>
           <div className="wallpaperPreview">
