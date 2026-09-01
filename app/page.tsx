@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ModelViewer from "./ModelViewer";
 import Discussion from "./Discussion";
+import AccountNav from "./AccountNav";
+import FigurineSection from "./FigurineSection";
 
 const productionImages = [
   { src: "/production-blender.png", alt: "3D-модель головы Кирилла в Blender 5.1.0" },
@@ -87,7 +89,7 @@ export default function MoviePage() {
         </a>
         <nav aria-label="Основная навигация">
           <a href="#about">О фильме</a>
-          <span className="avatar">К</span>
+          <AccountNav />
         </nav>
       </header>
 
@@ -151,6 +153,7 @@ export default function MoviePage() {
             <li><span>01</span><strong>Кирилл Горностаев</strong></li>
             <li><span>02</span><strong>Платон Точилин</strong></li>
             <li><span>03</span><strong>Александр Пугин</strong></li>
+            <li><span>04</span><strong>Глеб Иванов <small>(Глеб Иванов)</small></strong></li>
           </ol>
         </section>
 
@@ -205,6 +208,8 @@ export default function MoviePage() {
           </div>
           <ModelViewer />
         </section>
+
+        <FigurineSection />
 
         <button className="teaserCard" onClick={() => setTrailerOpen(true)} aria-label="Воспроизвести тизер" data-reveal>
           <Image src="/teaser-cover.jpg" fill sizes="(max-width: 900px) 100vw, 1100px" alt="Первый кадр тизера" />
