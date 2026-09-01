@@ -41,6 +41,16 @@ export default function SliceModelViewer() {
     let source: THREE.Group | null = null;
     new FBXLoader().load("/kirill-slice.fbx", (object) => {
       source = object;
+      object.updateMatrixWorld(true);
+      object.traverse((child) => {
+        if (!(child instanceof THREE.Mesh)) return;
+        const geometry = child.geometry as THREE.BufferGeometry;
+        // FBX can contain mirrored objects and stale custom normals. Rebuilding
+        // them before cloning prevents holes and inverted lighting in the viewer.
+        geometry.deleteAttribute("normal");
+        geometry.computeVertexNormals();
+        geometry.normalizeNormals();
+      });
       const box = new THREE.Box3().setFromObject(object);
       const center = box.getCenter(new THREE.Vector3());
       const size = box.getSize(new THREE.Vector3());
@@ -57,6 +67,10 @@ export default function SliceModelViewer() {
           const original = Array.isArray(child.material) ? child.material : [child.material];
           const materials = original.map((item) => {
             const material = item.clone();
+            // Some parts of the source FBX use mirrored transforms. DoubleSide
+            // lets WebGL shade both orientations instead of culling those faces.
+            material.side = THREE.DoubleSide;
+            material.shadowSide = THREE.DoubleSide;
             material.clippingPlanes = [
               new THREE.Plane(new THREE.Vector3(0, 1, 0), -low),
               new THREE.Plane(new THREE.Vector3(0, -1, 0), high)
