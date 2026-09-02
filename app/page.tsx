@@ -153,7 +153,7 @@ export default function MoviePage() {
             <li><span>01</span><strong>Кирилл Горностаев</strong></li>
             <li><span>02</span><strong>Платон Точилин</strong></li>
             <li><span>03</span><strong>Александр Пугин</strong></li>
-            <li><span>04</span><strong>Глеб Иванов <small>(Глеб Иванов)</small></strong></li>
+            <li><span>04</span><strong>Глеб Иванов</strong></li>
           </ol>
         </section>
 

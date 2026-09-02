@@ -73,10 +73,8 @@ export default function SliceModelViewer() {
             material.side = THREE.DoubleSide;
             material.shadowSide = THREE.DoubleSide;
             material.clippingPlanes = [
-              // Three.js keeps the negative half-space of a clipping plane.
-              // These normals therefore point out of the retained Y band.
-              new THREE.Plane(new THREE.Vector3(0, -1, 0), low + baseY),
-              new THREE.Plane(new THREE.Vector3(0, 1, 0), -(high + baseY))
+              new THREE.Plane(new THREE.Vector3(0, 1, 0), -(low + baseY)),
+              new THREE.Plane(new THREE.Vector3(0, -1, 0), high + baseY)
             ];
             material.clipShadows = true; material.needsUpdate = true;
             return material;
