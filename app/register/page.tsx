@@ -9,7 +9,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     fetch("/api/auth/session", { cache: "no-store" }).then((r) => r.json()).then((data) => {
-      if (data.user) window.location.replace(new URLSearchParams(window.location.search).get("next") || "/#figurine");
+      if (data.user) window.location.replace(new URLSearchParams(window.location.search).get("next") || "/");
     }).catch(() => undefined);
   }, []);
 
@@ -24,8 +24,8 @@ export default function RegisterPage() {
     const data = await response.json().catch(() => ({}));
     setPending(false);
     if (!response.ok) return setError(data.error || "Что-то пошло не так");
-    const requested = new URLSearchParams(window.location.search).get("next") || "/#figurine";
-    const destination = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/#figurine";
+    const requested = new URLSearchParams(window.location.search).get("next") || "/";
+    const destination = requested.startsWith("/") && !requested.startsWith("//") ? requested : "/";
     window.location.replace(destination);
   }
 
@@ -35,7 +35,7 @@ export default function RegisterPage() {
       <section className="authPanel">
         <span className="authEyebrow">АККАУНТ</span>
         <h1>{mode === "register" ? "Регистрация" : "Вход"}</h1>
-        <p>Аккаунт нужен, чтобы занять одно из пяти мест в предзаказе фигурки.</p>
+        <p>Создайте профиль, чтобы участвовать в жизни сайта и пользоваться его возможностями.</p>
         <form onSubmit={submit}>
           {mode === "register" && <label><span>Ваше имя</span><input name="name" autoComplete="name" minLength={2} maxLength={50} required placeholder="Как вас показать в списке" /></label>}
           <label><span>Логин</span><input name="username" autoComplete="username" minLength={3} maxLength={30} required placeholder="kirill_fan" /></label>
