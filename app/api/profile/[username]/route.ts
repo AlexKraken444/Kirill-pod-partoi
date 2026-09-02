@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, isVerifiedUsername, normalizeUsername, validUsername } from "@/lib/auth";
+import { getCurrentUser, isVerificationAdmin, normalizeUsername, validUsername } from "@/lib/auth";
 import { ensureAccountSchema, getDatabase } from "@/lib/database";
 
 export const runtime = "nodejs";
@@ -15,7 +15,7 @@ export async function GET(_request: Request, { params }: Context) {
     const username = normalizeUsername(decodeURIComponent((await params).username));
     if (!validUsername(username)) return NextResponse.json({ error: "Профиль не найден" }, { status: 404 });
     const [rows, viewer] = await Promise.all([
-      sql`SELECT id, display_name, username, bio, avatar_data, created_at FROM app_users WHERE username = ${username} LIMIT 1`,
+      sql`SELECT id, display_name, username, bio, avatar_data, verified, created_at FROM app_users WHERE username = ${username} LIMIT 1`,
       getCurrentUser(sql)
     ]);
     if (!rows.length) return NextResponse.json({ error: "Профиль не найден" }, { status: 404 });
@@ -25,12 +25,33 @@ export async function GET(_request: Request, { params }: Context) {
         name: String(row.display_name), username: String(row.username), bio: String(row.bio || ""),
         avatar: row.avatar_data ? String(row.avatar_data) : null,
         createdAt: new Date(row.created_at as string | Date).toISOString(),
-        isOwn: viewer?.id === String(row.id), verified: isVerifiedUsername(String(row.username))
+        isOwn: viewer?.id === String(row.id), verified: Boolean(row.verified),
+        canManageVerification: Boolean(viewer && isVerificationAdmin(viewer.username))
       }
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Profile load failed", error);
     return NextResponse.json({ error: "Не удалось загрузить профиль" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request, { params }: Context) {
+  const sql = getDatabase();
+  if (!sql) return NextResponse.json({ error: "База данных пока не подключена" }, { status: 503 });
+  try {
+    await ensureAccountSchema(sql);
+    const user = await getCurrentUser(sql);
+    if (!user) return NextResponse.json({ error: "Сначала войдите в аккаунт" }, { status: 401 });
+    if (!isVerificationAdmin(user.username)) return NextResponse.json({ error: "Недостаточно прав" }, { status: 403 });
+    const username = normalizeUsername(decodeURIComponent((await params).username));
+    const body = await request.json() as { verified?: unknown };
+    if (typeof body.verified !== "boolean") return NextResponse.json({ error: "Некорректный статус" }, { status: 400 });
+    const rows = await sql`UPDATE app_users SET verified = ${body.verified} WHERE username = ${username} RETURNING id`;
+    if (!rows.length) return NextResponse.json({ error: "Профиль не найден" }, { status: 404 });
+    return NextResponse.json({ verified: body.verified });
+  } catch (error) {
+    console.error("Verification update failed", error);
+    return NextResponse.json({ error: "Не удалось изменить галочку" }, { status: 500 });
   }
 }
 

@@ -6,9 +6,9 @@ import { ensureAccountSchema, getDatabase, type SqlClient } from "./database";
 const scrypt = promisify(scryptCallback);
 export const SESSION_COOKIE = "kirill_session";
 const SESSION_DAYS = 30;
-const VERIFIED_USERNAMES = new Set(["yahz"]);
+const VERIFICATION_ADMIN = "yahz";
 
-export type AccountUser = { id: string; name: string; username: string; avatar: string | null };
+export type AccountUser = { id: string; name: string; username: string; avatar: string | null; verified: boolean };
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
@@ -58,14 +58,14 @@ export async function getCurrentUser(sql = getDatabase()): Promise<AccountUser |
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const rows = await sql`
-    SELECT u.id, u.display_name, u.username, u.avatar_data
+    SELECT u.id, u.display_name, u.username, u.avatar_data, u.verified
     FROM app_sessions s
     JOIN app_users u ON u.id = s.user_id
     WHERE s.token_hash = ${hashToken(token)} AND s.expires_at > NOW()
     LIMIT 1
   `;
   if (!rows.length) return null;
-  return { id: String(rows[0].id), name: String(rows[0].display_name), username: String(rows[0].username), avatar: rows[0].avatar_data ? String(rows[0].avatar_data) : null };
+  return { id: String(rows[0].id), name: String(rows[0].display_name), username: String(rows[0].username), avatar: rows[0].avatar_data ? String(rows[0].avatar_data) : null, verified: Boolean(rows[0].verified) };
 }
 
 export function normalizeUsername(value: string) {
@@ -76,8 +76,8 @@ export function validUsername(value: string) {
   return /^[a-zа-яё0-9._-]{3,30}$/iu.test(value);
 }
 
-export function isVerifiedUsername(value: string) {
-  return VERIFIED_USERNAMES.has(normalizeUsername(value));
+export function isVerificationAdmin(value: string) {
+  return normalizeUsername(value) === VERIFICATION_ADMIN;
 }
 
 export { randomUUID };

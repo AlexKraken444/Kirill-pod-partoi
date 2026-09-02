@@ -10,6 +10,7 @@ type RawPost = {
   createdAt: string;
   username: string | null;
   verified: boolean;
+  avatar: string | null;
 };
 
 type Thread = RawPost & { replies: RawPost[] };
@@ -166,7 +167,7 @@ export default function Discussion() {
             )}
             {threads.map((thread) => (
               <article className="discussionThread" key={thread.id}>
-                <div className="commentAvatar" aria-hidden="true">{initial(thread.name)}</div>
+                {thread.username ? <a className="commentAvatar" href={`/profile/${encodeURIComponent(thread.username)}`} aria-label={`Профиль ${thread.name}`}>{thread.avatar ? <img src={thread.avatar} alt="" /> : initial(thread.name)}</a> : <div className="commentAvatar" aria-hidden="true">{initial(thread.name)}</div>}
                 <div className="commentBody">
                   <header>{thread.username ? <a className="profileAuthor" href={`/profile/${encodeURIComponent(thread.username)}`}>{thread.name}{thread.verified && <span className="verifiedBadge" title="Подтверждённый профиль">✓</span>}</a> : <strong>{thread.name}</strong>}<time dateTime={thread.createdAt}>{formatDate(thread.createdAt)}</time></header>
                   <p>{thread.text}</p>
@@ -180,7 +181,7 @@ export default function Discussion() {
                     <div className="replyList">
                       {thread.replies.map((reply) => (
                         <article className="discussionReply" key={reply.id}>
-                          <div className="commentAvatar small" aria-hidden="true">{initial(reply.name)}</div>
+                          {reply.username ? <a className="commentAvatar small" href={`/profile/${encodeURIComponent(reply.username)}`} aria-label={`Профиль ${reply.name}`}>{reply.avatar ? <img src={reply.avatar} alt="" /> : initial(reply.name)}</a> : <div className="commentAvatar small" aria-hidden="true">{initial(reply.name)}</div>}
                           <div className="commentBody">
                             <header>{reply.username ? <a className="profileAuthor" href={`/profile/${encodeURIComponent(reply.username)}`}>{reply.name}{reply.verified && <span className="verifiedBadge" title="Подтверждённый профиль">✓</span>}</a> : <strong>{reply.name}</strong>}<time dateTime={reply.createdAt}>{formatDate(reply.createdAt)}</time></header>
                             <p>{reply.text}</p>

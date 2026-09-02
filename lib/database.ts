@@ -31,6 +31,8 @@ export function ensureAccountSchema(sql: SqlClient) {
       `;
       await sql`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS bio VARCHAR(500) NOT NULL DEFAULT ''`;
       await sql`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS avatar_data TEXT`;
+      await sql`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS verified BOOLEAN NOT NULL DEFAULT FALSE`;
+      await sql`UPDATE app_users SET verified = TRUE WHERE LOWER(username) = 'yahz'`;
       await sql`
         CREATE INDEX IF NOT EXISTS app_sessions_user_id_idx
         ON app_sessions (user_id)

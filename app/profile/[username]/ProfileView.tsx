@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useEffect, useState } from "react";
 
-type Profile = { name: string; username: string; bio: string; avatar: string | null; createdAt: string; isOwn: boolean; verified: boolean };
+type Profile = { name: string; username: string; bio: string; avatar: string | null; createdAt: string; isOwn: boolean; verified: boolean; canManageVerification: boolean };
 
 function resizeAvatar(file: File) {
   return new Promise<string>((resolve, reject) => {
@@ -49,6 +49,15 @@ export default function ProfileView({ username }: { username: string }) {
     if (!response.ok) return setStatus(data.error || "Не удалось сохранить профиль");
     setProfile((current) => current ? { ...current, bio, avatar } : current); setEditing(false); setStatus("Профиль сохранён");
   };
+  const toggleVerification = async () => {
+    if (!profile) return;
+    setSaving(true); setStatus("");
+    const response = await fetch(`/api/profile/${encodeURIComponent(username)}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ verified: !profile.verified }) });
+    const data = await response.json().catch(() => ({})); setSaving(false);
+    if (!response.ok) return setStatus(data.error || "Не удалось изменить галочку");
+    setProfile((current) => current ? { ...current, verified: data.verified } : current);
+    setStatus(data.verified ? "Галочка выдана" : "Галочка снята");
+  };
 
   return (
     <main className="profilePage">
@@ -59,7 +68,7 @@ export default function ProfileView({ username }: { username: string }) {
         </div>
         <div className="profileContent"><span className="profileEyebrow">ПРОФИЛЬ</span><h1>{profile.name}{profile.verified && <span className="verifiedBadge large" title="Подтверждённый профиль" aria-label="Подтверждённый профиль">✓</span>}</h1><strong>@{profile.username}</strong>
           {editing ? <><label className="bioEditor"><span>Описание</span><textarea value={bio} onChange={(event) => setBio(event.target.value)} maxLength={500} rows={6} placeholder="Расскажите немного о себе…" /><small>{bio.length} / 500</small></label><div className="profileActions"><button onClick={() => { setEditing(false); setBio(profile.bio); setAvatar(profile.avatar); }}>Отмена</button><button onClick={save} disabled={saving}>{saving ? "Сохраняем…" : "Сохранить"}</button></div></>
-          : <><p className={profile.bio ? "" : "emptyBio"}>{profile.bio || "Пользователь пока ничего о себе не рассказал."}</p>{profile.isOwn && <button className="editProfile" onClick={() => { setEditing(true); setStatus(""); }}>Редактировать профиль</button>}</>}
+          : <><p className={profile.bio ? "" : "emptyBio"}>{profile.bio || "Пользователь пока ничего о себе не рассказал."}</p><div className="profileOwnerActions">{profile.isOwn && <button className="editProfile" onClick={() => { setEditing(true); setStatus(""); }}>Редактировать профиль</button>}{profile.canManageVerification && <button className={`verificationControl ${profile.verified ? "remove" : ""}`} onClick={toggleVerification} disabled={saving}>{profile.verified ? "Снять галочку" : "Выдать галочку"}<span>✓</span></button>}</div></>}
           {status && <div className="profileStatus" role="status">{status}</div>}
         </div>
       </section>}

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, isVerifiedUsername } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { ensureAccountSchema, getDatabase, type SqlClient } from "@/lib/database";
 
 export const runtime = "nodejs";
@@ -7,12 +7,12 @@ export const dynamic = "force-dynamic";
 
 async function snapshot(sql: SqlClient, userId?: string) {
   const rows = await sql`
-    SELECT p.slot, p.user_id, u.display_name, u.username
+    SELECT p.slot, p.user_id, u.display_name, u.username, u.verified
     FROM figurine_preorders p JOIN app_users u ON u.id = p.user_id
     ORDER BY p.slot ASC
   `;
   return {
-    slots: rows.map((row) => ({ slot: Number(row.slot), name: String(row.display_name), username: String(row.username), verified: isVerifiedUsername(String(row.username)), mine: userId === String(row.user_id) })),
+    slots: rows.map((row) => ({ slot: Number(row.slot), name: String(row.display_name), username: String(row.username), verified: Boolean(row.verified), mine: userId === String(row.user_id) })),
     remaining: Math.max(0, 5 - rows.length)
   };
 }

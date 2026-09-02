@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
-import { getCurrentUser, isVerifiedUsername } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { ensureAccountSchema } from "@/lib/database";
 
 export const runtime = "nodejs";
@@ -37,6 +37,14 @@ function ensureSchema(sql: SqlClient) {
         ON discussion_posts (parent_id)
       `;
       await sql`ALTER TABLE discussion_posts ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES app_users(id) ON DELETE SET NULL`;
+      await sql`
+        UPDATE discussion_posts AS post
+        SET author_id = account.id
+        FROM app_users AS account
+        WHERE post.author_id IS NULL
+          AND LOWER(account.username) = 'yahz'
+          AND LOWER(TRIM(post.name)) = LOWER(TRIM(account.display_name))
+      `;
     })().catch((error) => {
       schemaReady = null;
       throw error;
@@ -57,7 +65,7 @@ export async function GET() {
     await ensureAccountSchema(sql);
     await ensureSchema(sql);
     const rows = await sql`
-      SELECT p.id, p.parent_id, p.name, p.body, p.created_at, u.username
+      SELECT p.id, p.parent_id, p.name, p.body, p.created_at, u.username, u.avatar_data, u.verified
       FROM discussion_posts p
       LEFT JOIN app_users u ON u.id = p.author_id
       ORDER BY p.created_at ASC
@@ -69,9 +77,10 @@ export async function GET() {
       parentId: row.parent_id ? String(row.parent_id) : null,
       name: String(row.name),
       text: String(row.body),
-      createdAt: new Date(row.created_at as string | Date).toISOString()
-      ,username: row.username ? String(row.username) : null,
-      verified: row.username ? isVerifiedUsername(String(row.username)) : false
+      createdAt: new Date(row.created_at as string | Date).toISOString(),
+      username: row.username ? String(row.username) : null,
+      verified: Boolean(row.verified),
+      avatar: row.avatar_data ? String(row.avatar_data) : null
     }));
 
     return NextResponse.json({ posts }, { headers: { "Cache-Control": "no-store" } });
@@ -141,9 +150,10 @@ export async function POST(request: Request) {
         parentId: post.parent_id ? String(post.parent_id) : null,
         name: String(post.name),
         text: String(post.body),
-        createdAt: new Date(post.created_at as string | Date).toISOString()
-        ,username: user.username,
-        verified: isVerifiedUsername(user.username)
+        createdAt: new Date(post.created_at as string | Date).toISOString(),
+        username: user.username,
+        verified: user.verified,
+        avatar: user.avatar
       }
     }, { status: 201 });
   } catch (error) {
