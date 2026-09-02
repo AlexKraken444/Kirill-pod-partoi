@@ -37,7 +37,7 @@ export default function RegisterPage() {
         <h1>{mode === "register" ? "Регистрация" : "Вход"}</h1>
         <p>Создайте профиль, чтобы участвовать в жизни сайта и пользоваться его возможностями.</p>
         <form onSubmit={submit}>
-          {mode === "register" && <label><span>Ваше имя</span><input name="name" autoComplete="name" minLength={2} maxLength={50} required placeholder="Как вас показать в списке" /></label>}
+          {mode === "register" && <label><span>Ваше имя</span><input name="name" autoComplete="name" minLength={2} maxLength={50} required placeholder="Введите ваше имя" /></label>}
           <label><span>Логин</span><input name="username" autoComplete="username" minLength={3} maxLength={30} required placeholder="kirill_fan" /></label>
           <label><span>Пароль</span><input name="password" type="password" autoComplete={mode === "register" ? "new-password" : "current-password"} minLength={8} maxLength={128} required placeholder="Не менее 8 символов" /></label>
           {error && <div className="authError" role="alert">{error}</div>}
