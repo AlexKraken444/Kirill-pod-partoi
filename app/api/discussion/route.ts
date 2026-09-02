@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, isVerifiedUsername } from "@/lib/auth";
 import { ensureAccountSchema } from "@/lib/database";
 
 export const runtime = "nodejs";
@@ -70,7 +70,8 @@ export async function GET() {
       name: String(row.name),
       text: String(row.body),
       createdAt: new Date(row.created_at as string | Date).toISOString()
-      ,username: row.username ? String(row.username) : null
+      ,username: row.username ? String(row.username) : null,
+      verified: row.username ? isVerifiedUsername(String(row.username)) : false
     }));
 
     return NextResponse.json({ posts }, { headers: { "Cache-Control": "no-store" } });
@@ -141,7 +142,8 @@ export async function POST(request: Request) {
         name: String(post.name),
         text: String(post.body),
         createdAt: new Date(post.created_at as string | Date).toISOString()
-        ,username: user.username
+        ,username: user.username,
+        verified: isVerifiedUsername(user.username)
       }
     }, { status: 201 });
   } catch (error) {

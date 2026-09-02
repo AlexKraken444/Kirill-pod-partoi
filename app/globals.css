@@ -239,6 +239,8 @@ h2 span { color:#4d4b48; }
 .commentBody header strong { color:#e2dfd9; font-size:14px; }
 .profileAuthor { color:#e2dfd9; font-size:14px; font-weight:700; transition:color .2s; }
 .profileAuthor:hover { color:var(--orange); }
+.verifiedBadge { width:16px; height:16px; display:inline-grid; place-items:center; margin-left:6px; border-radius:50%; background:#3b82f6; color:#fff; font-size:10px; font-weight:900; line-height:1; vertical-align:middle; box-shadow:0 0 0 2px rgba(59,130,246,.14); }
+.verifiedBadge.large { width:24px; height:24px; margin-left:12px; font-family:Inter,Arial,sans-serif; font-size:14px; transform:translateY(-8px); }
 .commentBody time { color:#5d5a56; font-size:9px; letter-spacing:.05em; white-space:nowrap; }
 .commentBody>p { margin:0; color:#aaa7a1; font-size:14px; line-height:1.75; white-space:pre-wrap; overflow-wrap:anywhere; }
 .replyButton { margin-top:13px; padding:0; border:0; background:transparent; color:#77736e; font-size:10px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; cursor:pointer; transition:color .2s; }

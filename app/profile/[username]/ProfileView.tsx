@@ -2,7 +2,7 @@
 
 import { ChangeEvent, useEffect, useState } from "react";
 
-type Profile = { name: string; username: string; bio: string; avatar: string | null; createdAt: string; isOwn: boolean };
+type Profile = { name: string; username: string; bio: string; avatar: string | null; createdAt: string; isOwn: boolean; verified: boolean };
 
 function resizeAvatar(file: File) {
   return new Promise<string>((resolve, reject) => {
@@ -57,7 +57,7 @@ export default function ProfileView({ username }: { username: string }) {
         <div className="profileAvatar">{avatar ? <img src={avatar} alt={`Аватар пользователя ${profile.name}`} /> : <span>{profile.name.slice(0, 1).toLocaleUpperCase("ru-RU")}</span>}
           {editing && <label className="avatarUpload">Изменить<input type="file" accept="image/png,image/jpeg,image/webp" onChange={chooseAvatar} /></label>}
         </div>
-        <div className="profileContent"><span className="profileEyebrow">ПРОФИЛЬ</span><h1>{profile.name}</h1><strong>@{profile.username}</strong>
+        <div className="profileContent"><span className="profileEyebrow">ПРОФИЛЬ</span><h1>{profile.name}{profile.verified && <span className="verifiedBadge large" title="Подтверждённый профиль" aria-label="Подтверждённый профиль">✓</span>}</h1><strong>@{profile.username}</strong>
           {editing ? <><label className="bioEditor"><span>Описание</span><textarea value={bio} onChange={(event) => setBio(event.target.value)} maxLength={500} rows={6} placeholder="Расскажите немного о себе…" /><small>{bio.length} / 500</small></label><div className="profileActions"><button onClick={() => { setEditing(false); setBio(profile.bio); setAvatar(profile.avatar); }}>Отмена</button><button onClick={save} disabled={saving}>{saving ? "Сохраняем…" : "Сохранить"}</button></div></>
           : <><p className={profile.bio ? "" : "emptyBio"}>{profile.bio || "Пользователь пока ничего о себе не рассказал."}</p>{profile.isOwn && <button className="editProfile" onClick={() => { setEditing(true); setStatus(""); }}>Редактировать профиль</button>}</>}
           {status && <div className="profileStatus" role="status">{status}</div>}

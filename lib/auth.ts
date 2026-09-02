@@ -6,6 +6,7 @@ import { ensureAccountSchema, getDatabase, type SqlClient } from "./database";
 const scrypt = promisify(scryptCallback);
 export const SESSION_COOKIE = "kirill_session";
 const SESSION_DAYS = 30;
+const VERIFIED_USERNAMES = new Set(["yahz"]);
 
 export type AccountUser = { id: string; name: string; username: string; avatar: string | null };
 
@@ -73,6 +74,10 @@ export function normalizeUsername(value: string) {
 
 export function validUsername(value: string) {
   return /^[a-zа-яё0-9._-]{3,30}$/iu.test(value);
+}
+
+export function isVerifiedUsername(value: string) {
+  return VERIFIED_USERNAMES.has(normalizeUsername(value));
 }
 
 export { randomUUID };

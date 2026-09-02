@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCurrentUser, normalizeUsername, validUsername } from "@/lib/auth";
+import { getCurrentUser, isVerifiedUsername, normalizeUsername, validUsername } from "@/lib/auth";
 import { ensureAccountSchema, getDatabase } from "@/lib/database";
 
 export const runtime = "nodejs";
@@ -25,7 +25,7 @@ export async function GET(_request: Request, { params }: Context) {
         name: String(row.display_name), username: String(row.username), bio: String(row.bio || ""),
         avatar: row.avatar_data ? String(row.avatar_data) : null,
         createdAt: new Date(row.created_at as string | Date).toISOString(),
-        isOwn: viewer?.id === String(row.id)
+        isOwn: viewer?.id === String(row.id), verified: isVerifiedUsername(String(row.username))
       }
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
