@@ -11,6 +11,7 @@ type RawPost = {
 };
 
 type Thread = RawPost & { replies: RawPost[] };
+type User = { name: string; username: string };
 
 const formatDate = (date: string) => new Intl.DateTimeFormat("ru-RU", {
   day: "numeric",
@@ -24,10 +25,10 @@ const initial = (name: string) => name.trim().charAt(0).toUpperCase() || "?";
 export default function Discussion() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "unavailable" | "error">("loading");
-  const [name, setName] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [sessionReady, setSessionReady] = useState(false);
   const [text, setText] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);
-  const [replyName, setReplyName] = useState("");
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState("");
@@ -52,7 +53,14 @@ export default function Discussion() {
     }
   }, []);
 
-  useEffect(() => { void loadPosts(); }, [loadPosts]);
+  useEffect(() => {
+    void loadPosts();
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((response) => response.json())
+      .then((data) => setUser(data.user || null))
+      .catch(() => setUser(null))
+      .finally(() => setSessionReady(true));
+  }, [loadPosts]);
 
   const totalMessages = useMemo(
     () => threads.reduce((total, thread) => total + 1 + thread.replies.length, 0),
@@ -61,10 +69,13 @@ export default function Discussion() {
 
   const send = async (event: FormEvent, parentId: string | null = null) => {
     event.preventDefault();
-    const submittedName = (parentId ? replyName : name).trim();
+    if (!user) {
+      window.location.href = "/register?next=%2F%23discussion";
+      return;
+    }
     const submittedText = (parentId ? replyText : text).trim();
-    if (!submittedName || !submittedText) {
-      setMessage("Укажите имя и напишите сообщение.");
+    if (!submittedText) {
+      setMessage("Напишите сообщение.");
       return;
     }
 
@@ -74,7 +85,7 @@ export default function Discussion() {
       const response = await fetch("/api/discussion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: submittedName, text: submittedText, parentId, website: "" })
+        body: JSON.stringify({ text: submittedText, parentId, website: "" })
       });
       const data = await response.json() as { post?: RawPost; error?: string };
       if (!response.ok || !data.post) throw new Error(data.error || "Не удалось отправить сообщение");
@@ -123,15 +134,18 @@ export default function Discussion() {
 
       {status === "ready" && (
         <>
-          <form className="discussionComposer" onSubmit={(event) => void send(event)}>
+          {!sessionReady ? <div className="discussionAuthGate">Проверяем аккаунт…</div> : !user ? (
+            <div className="discussionAuthGate">
+              <span>УЧАСТИЕ В ОБСУЖДЕНИИ</span>
+              <strong>Зарегистрируйтесь, чтобы написать сообщение</strong>
+              <p>Читать обсуждение можно без аккаунта. Для публикации и ответов потребуется регистрация.</p>
+              <a href="/register?next=%2F%23discussion">Регистрация <i>→</i></a>
+            </div>
+          ) : <form className="discussionComposer" onSubmit={(event) => void send(event)}>
             <div className="composerTopline">
-              <strong>Новое сообщение</strong>
+              <strong>Новое сообщение · {user.name}</strong>
               <span>{totalMessages} {totalMessages === 1 ? "сообщение" : "сообщений"}</span>
             </div>
-            <label>
-              <span>Ваше имя</span>
-              <input value={name} onChange={(event) => setName(event.target.value)} maxLength={40} placeholder="Как вас зовут?" autoComplete="name" />
-            </label>
             <label>
               <span>Текст</span>
               <textarea value={text} onChange={(event) => setText(event.target.value)} maxLength={800} placeholder="Напишите, что думаете о фильме…" rows={4} />
@@ -142,7 +156,7 @@ export default function Discussion() {
               <p role="status" aria-live="polite">{message}</p>
               <button type="submit" disabled={sending}>{sending ? "Отправка…" : "Опубликовать"}<i>↗</i></button>
             </div>
-          </form>
+          </form>}
 
           <div className="discussionFeed">
             {threads.length === 0 && (
@@ -155,8 +169,8 @@ export default function Discussion() {
                   <header><strong>{thread.name}</strong><time dateTime={thread.createdAt}>{formatDate(thread.createdAt)}</time></header>
                   <p>{thread.text}</p>
                   <button className="replyButton" onClick={() => {
+                    if (!user) { window.location.href = "/register?next=%2F%23discussion"; return; }
                     setReplyTo((current) => current === thread.id ? null : thread.id);
-                    setReplyName(name);
                     setMessage("");
                   }}>Ответить</button>
 
@@ -177,8 +191,7 @@ export default function Discussion() {
                   {replyTo === thread.id && (
                     <form className="replyComposer" onSubmit={(event) => void send(event, thread.id)}>
                       <strong>Ответ для {thread.name}</strong>
-                      <input value={replyName} onChange={(event) => setReplyName(event.target.value)} maxLength={40} placeholder="Ваше имя" autoComplete="name" autoFocus />
-                      <textarea value={replyText} onChange={(event) => setReplyText(event.target.value)} maxLength={800} placeholder="Напишите ответ…" rows={3} />
+                      <textarea value={replyText} onChange={(event) => setReplyText(event.target.value)} maxLength={800} placeholder="Напишите ответ…" rows={3} autoFocus />
                       <div><button type="button" onClick={() => setReplyTo(null)}>Отмена</button><button type="submit" disabled={sending}>{sending ? "Отправка…" : "Ответить"}</button></div>
                     </form>
                   )}

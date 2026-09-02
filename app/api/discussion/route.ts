@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -80,10 +81,12 @@ export async function POST(request: Request) {
 
   try {
     await ensureSchema(sql);
+    const user = await getCurrentUser(sql);
     const payload = await request.json() as { name?: unknown; text?: unknown; parentId?: unknown; website?: unknown };
     if (payload.website) return NextResponse.json({ ok: true }, { status: 201 });
 
-    const name = typeof payload.name === "string" ? payload.name.trim() : "";
+    if (!user) return NextResponse.json({ error: "Сначала зарегистрируйтесь или войдите" }, { status: 401 });
+    const name = user.name;
     const text = typeof payload.text === "string" ? payload.text.trim() : "";
     const parentId = typeof payload.parentId === "string" && payload.parentId ? payload.parentId : null;
 

@@ -62,6 +62,7 @@ export default function SliceModelViewer() {
         const clone = skeletonClone(object) as THREE.Group;
         const low = centeredBox.min.y + index * band;
         const high = low + band;
+        const baseY = (index - (LAYERS - 1) / 2) * modelHeight * .012;
         clone.traverse((child) => {
           if (!(child instanceof THREE.Mesh)) return;
           const original = Array.isArray(child.material) ? child.material : [child.material];
@@ -72,8 +73,10 @@ export default function SliceModelViewer() {
             material.side = THREE.DoubleSide;
             material.shadowSide = THREE.DoubleSide;
             material.clippingPlanes = [
-              new THREE.Plane(new THREE.Vector3(0, 1, 0), -low),
-              new THREE.Plane(new THREE.Vector3(0, -1, 0), high)
+              // Three.js keeps the negative half-space of a clipping plane.
+              // These normals therefore point out of the retained Y band.
+              new THREE.Plane(new THREE.Vector3(0, -1, 0), low + baseY),
+              new THREE.Plane(new THREE.Vector3(0, 1, 0), -(high + baseY))
             ];
             material.clipShadows = true; material.needsUpdate = true;
             return material;
@@ -81,7 +84,7 @@ export default function SliceModelViewer() {
           child.material = Array.isArray(child.material) ? materials : materials[0];
         });
         const group = new THREE.Group();
-        group.userData.baseY = (index - (LAYERS - 1) / 2) * modelHeight * .012;
+        group.userData.baseY = baseY;
         group.position.y = group.userData.baseY;
         group.add(clone); layerGroups.push(group); scene.add(group);
       }
