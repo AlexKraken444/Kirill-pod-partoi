@@ -7,12 +7,12 @@ export const dynamic = "force-dynamic";
 
 async function snapshot(sql: SqlClient, userId?: string) {
   const rows = await sql`
-    SELECT p.slot, p.user_id, u.display_name
+    SELECT p.slot, p.user_id, u.display_name, u.username
     FROM figurine_preorders p JOIN app_users u ON u.id = p.user_id
     ORDER BY p.slot ASC
   `;
   return {
-    slots: rows.map((row) => ({ slot: Number(row.slot), name: String(row.display_name), mine: userId === String(row.user_id) })),
+    slots: rows.map((row) => ({ slot: Number(row.slot), name: String(row.display_name), username: String(row.username), mine: userId === String(row.user_id) })),
     remaining: Math.max(0, 5 - rows.length)
   };
 }

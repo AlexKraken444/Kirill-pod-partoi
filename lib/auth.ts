@@ -7,7 +7,7 @@ const scrypt = promisify(scryptCallback);
 export const SESSION_COOKIE = "kirill_session";
 const SESSION_DAYS = 30;
 
-export type AccountUser = { id: string; name: string; username: string };
+export type AccountUser = { id: string; name: string; username: string; avatar: string | null };
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
@@ -57,14 +57,14 @@ export async function getCurrentUser(sql = getDatabase()): Promise<AccountUser |
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const rows = await sql`
-    SELECT u.id, u.display_name, u.username
+    SELECT u.id, u.display_name, u.username, u.avatar_data
     FROM app_sessions s
     JOIN app_users u ON u.id = s.user_id
     WHERE s.token_hash = ${hashToken(token)} AND s.expires_at > NOW()
     LIMIT 1
   `;
   if (!rows.length) return null;
-  return { id: String(rows[0].id), name: String(rows[0].display_name), username: String(rows[0].username) };
+  return { id: String(rows[0].id), name: String(rows[0].display_name), username: String(rows[0].username), avatar: rows[0].avatar_data ? String(rows[0].avatar_data) : null };
 }
 
 export function normalizeUsername(value: string) {

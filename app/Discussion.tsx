@@ -8,6 +8,7 @@ type RawPost = {
   name: string;
   text: string;
   createdAt: string;
+  username: string | null;
 };
 
 type Thread = RawPost & { replies: RawPost[] };
@@ -166,7 +167,7 @@ export default function Discussion() {
               <article className="discussionThread" key={thread.id}>
                 <div className="commentAvatar" aria-hidden="true">{initial(thread.name)}</div>
                 <div className="commentBody">
-                  <header><strong>{thread.name}</strong><time dateTime={thread.createdAt}>{formatDate(thread.createdAt)}</time></header>
+                  <header>{thread.username ? <a className="profileAuthor" href={`/profile/${encodeURIComponent(thread.username)}`}>{thread.name}</a> : <strong>{thread.name}</strong>}<time dateTime={thread.createdAt}>{formatDate(thread.createdAt)}</time></header>
                   <p>{thread.text}</p>
                   <button className="replyButton" onClick={() => {
                     if (!user) { window.location.href = "/register?next=%2F%23discussion"; return; }
@@ -180,7 +181,7 @@ export default function Discussion() {
                         <article className="discussionReply" key={reply.id}>
                           <div className="commentAvatar small" aria-hidden="true">{initial(reply.name)}</div>
                           <div className="commentBody">
-                            <header><strong>{reply.name}</strong><time dateTime={reply.createdAt}>{formatDate(reply.createdAt)}</time></header>
+                            <header>{reply.username ? <a className="profileAuthor" href={`/profile/${encodeURIComponent(reply.username)}`}>{reply.name}</a> : <strong>{reply.name}</strong>}<time dateTime={reply.createdAt}>{formatDate(reply.createdAt)}</time></header>
                             <p>{reply.text}</p>
                           </div>
                         </article>

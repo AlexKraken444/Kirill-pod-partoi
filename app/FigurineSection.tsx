@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import SliceModelViewer from "./SliceModelViewer";
 
-type Slot = { slot: number; name: string; mine: boolean };
+type Slot = { slot: number; name: string; username: string; mine: boolean };
 type State = { user: { name: string } | null; slots: Slot[]; remaining: number };
 
 export default function FigurineSection() {
@@ -40,7 +40,7 @@ export default function FigurineSection() {
       <div className="figurineModel"><SliceModelViewer /><small>Наведите на слой · потяните, чтобы повернуть</small></div>
       <div className="preorderList">
         <div><strong>Предзаказ</strong><span>{state ? `${state.remaining} из 5 свободно` : "Загрузка…"}</span></div>
-        <ol>{Array.from({ length: 5 }, (_, index) => { const occupied = state?.slots.find((item) => item.slot === index + 1); return <li className={occupied?.mine ? "mine" : ""} key={index}><span>{String(index + 1).padStart(2, "0")}</span><strong>{occupied?.name || "Свободное место"}</strong><i>{occupied ? "ЗАБРОНИРОВАНО" : "СВОБОДНО"}</i></li>; })}</ol>
+        <ol>{Array.from({ length: 5 }, (_, index) => { const occupied = state?.slots.find((item) => item.slot === index + 1); return <li className={occupied?.mine ? "mine" : ""} key={index}><span>{String(index + 1).padStart(2, "0")}</span>{occupied ? <a href={`/profile/${encodeURIComponent(occupied.username)}`}>{occupied.name}</a> : <strong>Свободное место</strong>}<i>{occupied ? "ЗАБРОНИРОВАНО" : "СВОБОДНО"}</i></li>; })}</ol>
       </div>
     </section>
   );

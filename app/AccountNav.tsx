@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-type User = { name: string; username: string };
+type User = { name: string; username: string; avatar: string | null };
 
 export default function AccountNav() {
   const [user, setUser] = useState<User | null>(null);
@@ -11,7 +11,7 @@ export default function AccountNav() {
   if (!user) return <a className="accountLink" href="/register">Регистрация</a>;
   return (
     <div className="accountMenu">
-      <span className="avatar" title={user.name}>{user.name.slice(0, 1).toLocaleUpperCase("ru-RU")}</span>
+      <a className="avatar" href={`/profile/${encodeURIComponent(user.username)}`} title={`Профиль ${user.name}`}>{user.avatar ? <img src={user.avatar} alt="" /> : user.name.slice(0, 1).toLocaleUpperCase("ru-RU")}</a>
       <button className="logoutButton" onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.reload(); }}>Выйти</button>
     </div>
   );

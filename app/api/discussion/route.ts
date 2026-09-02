@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
+import { ensureAccountSchema } from "@/lib/database";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,6 +36,7 @@ function ensureSchema(sql: SqlClient) {
         CREATE INDEX IF NOT EXISTS discussion_posts_parent_id_idx
         ON discussion_posts (parent_id)
       `;
+      await sql`ALTER TABLE discussion_posts ADD COLUMN IF NOT EXISTS author_id UUID REFERENCES app_users(id) ON DELETE SET NULL`;
     })().catch((error) => {
       schemaReady = null;
       throw error;
@@ -52,11 +54,13 @@ export async function GET() {
   if (!sql) return databaseUnavailable();
 
   try {
+    await ensureAccountSchema(sql);
     await ensureSchema(sql);
     const rows = await sql`
-      SELECT id, parent_id, name, body, created_at
-      FROM discussion_posts
-      ORDER BY created_at ASC
+      SELECT p.id, p.parent_id, p.name, p.body, p.created_at, u.username
+      FROM discussion_posts p
+      LEFT JOIN app_users u ON u.id = p.author_id
+      ORDER BY p.created_at ASC
       LIMIT 300
     `;
 
@@ -66,6 +70,7 @@ export async function GET() {
       name: String(row.name),
       text: String(row.body),
       createdAt: new Date(row.created_at as string | Date).toISOString()
+      ,username: row.username ? String(row.username) : null
     }));
 
     return NextResponse.json({ posts }, { headers: { "Cache-Control": "no-store" } });
@@ -80,6 +85,7 @@ export async function POST(request: Request) {
   if (!sql) return databaseUnavailable();
 
   try {
+    await ensureAccountSchema(sql);
     await ensureSchema(sql);
     const user = await getCurrentUser(sql);
     const payload = await request.json() as { name?: unknown; text?: unknown; parentId?: unknown; website?: unknown };
@@ -122,8 +128,8 @@ export async function POST(request: Request) {
 
     const id = randomUUID();
     const inserted = await sql`
-      INSERT INTO discussion_posts (id, parent_id, name, body, client_hash)
-      VALUES (${id}, ${parentId}, ${name}, ${text}, ${clientHash})
+      INSERT INTO discussion_posts (id, parent_id, name, body, client_hash, author_id)
+      VALUES (${id}, ${parentId}, ${name}, ${text}, ${clientHash}, ${user.id})
       RETURNING id, parent_id, name, body, created_at
     `;
     const post = inserted[0];
@@ -135,6 +141,7 @@ export async function POST(request: Request) {
         name: String(post.name),
         text: String(post.body),
         createdAt: new Date(post.created_at as string | Date).toISOString()
+        ,username: user.username
       }
     }, { status: 201 });
   } catch (error) {

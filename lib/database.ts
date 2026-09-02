@@ -29,6 +29,8 @@ export function ensureAccountSchema(sql: SqlClient) {
           created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )
       `;
+      await sql`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS bio VARCHAR(500) NOT NULL DEFAULT ''`;
+      await sql`ALTER TABLE app_users ADD COLUMN IF NOT EXISTS avatar_data TEXT`;
       await sql`
         CREATE INDEX IF NOT EXISTS app_sessions_user_id_idx
         ON app_sessions (user_id)
